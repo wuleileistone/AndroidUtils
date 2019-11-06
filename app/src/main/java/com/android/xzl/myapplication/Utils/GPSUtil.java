@@ -1,5 +1,10 @@
 package com.android.xzl.myapplication.Utils;
 
+import android.content.Context;
+import android.os.Build;
+import android.provider.Settings;
+import android.text.TextUtils;
+
 //高德地图和百度地图的坐标转换工具
 public class GPSUtil {  
     public static double pi = 3.1415926535897932384626;  
@@ -137,5 +142,34 @@ public class GPSUtil {
     private static double retain6(double num){  
         String result = String .format("%.6f", num);  
         return Double.valueOf(result);  
-    }  
+    }
+
+
+    /**
+     * 判断定位服务是否开启
+     *
+     * @param
+     * @return true 表示开启
+     */
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
+
+    // Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+    //PermissionConstants.RC_GPS是请求码，可以在onActivityResult中根据该请求码判断用户是否已经在设置页面打开位置服务
+    //                             startActivityForResult(intent, 111);
 }
