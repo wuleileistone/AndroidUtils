@@ -22,4 +22,9 @@ public class CommonUtil {
         }
         toast.show();
     }
+
+
+    public static void deleteString(){
+        LogUtils.d("heheda");
+    }
 }
